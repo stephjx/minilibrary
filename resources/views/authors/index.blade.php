@@ -3,8 +3,8 @@
         Authors
     </x-slot>
 
-    <!-- Add Author Modal -->
-    <div x-data="{ showModal: false }" class="relative">
+    <!-- Author Modals -->
+    <div x-data="{ showModal: false, showEditModal: false, selectedAuthor: null }" class="relative">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->
             <div class="p-4 border-b border-gray-200">
@@ -107,11 +107,11 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             </svg>
                                         </a>
-                                        <a href="{{ route('authors.edit', $author) }}" class="p-2 bg-green-50 rounded-lg border border-green-200 text-green-600 hover:bg-green-100 transition-colors" title="Edit Author">
+                                        <button @click="selectedAuthor = {{ $author->id }}; showEditModal = true" class="p-2 bg-green-50 rounded-lg border border-green-200 text-green-600 hover:bg-green-100 transition-colors" title="Edit Author">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                             </svg>
-                                        </a>
+                                        </button>
                                         <form action="{{ route('authors.destroy', $author) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this author?')">
                                             @csrf
                                             @method('DELETE')
@@ -149,6 +149,7 @@
             @endif
         </div>
 
+        <!-- Add Author Modal -->
         <!-- Modal Overlay -->
         <div x-show="showModal" 
              x-transition:enter="ease-out duration-300"
@@ -236,6 +237,114 @@
                                 class="px-4 py-2 text-sm font-medium text-white bg-[#0B3C5D] rounded-lg hover:bg-[#1a4d6e] transition-colors"
                             >
                                 Save Author
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Author Modal -->
+        <!-- Modal Overlay -->
+        <div x-show="showEditModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
+             @click="showEditModal = false">
+        </div>
+
+        <!-- Modal Content -->
+        <div x-show="showEditModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95"
+             class="fixed inset-0 z-50 overflow-y-auto"
+             @click.self="showEditModal = false">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Edit Author</h3>
+                        <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <form action="#" method="POST" class="p-6">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="author_id" x-model="selectedAuthor">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="edit_name" class="block text-sm font-medium text-gray-700 mb-1">Author Name</label>
+                                <input 
+                                    type="text" 
+                                    id="edit_name"
+                                    name="name" 
+                                    required
+                                    x-init="$watch('selectedAuthor', (value) => {
+                                        if (value) {
+                                            const author = {{ json_encode($authors->keyBy('id')->toArray()) }};
+                                            $refs.edit_name.value = author[value]?.name || '';
+                                            $refs.edit_email.value = author[value]?.email || '';
+                                            $refs.edit_bio.value = author[value]?.bio || '';
+                                        }
+                                    })"
+                                    x-ref="edit_name"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter author name"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="edit_email" class="block text-sm font-medium text-gray-700 mb-1">Email (Optional)</label>
+                                <input 
+                                    type="email" 
+                                    id="edit_email"
+                                    name="email" 
+                                    x-ref="edit_email"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter email address"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="edit_bio" class="block text-sm font-medium text-gray-700 mb-1">Bio (Optional)</label>
+                                <textarea 
+                                    id="edit_bio"
+                                    name="bio" 
+                                    rows="3"
+                                    x-ref="edit_bio"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter author biography"
+                                ></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                            <button 
+                                type="button" 
+                                @click="showEditModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-[#0B3C5D] rounded-lg hover:bg-[#1a4d6e] transition-colors"
+                            >
+                                Update Author
                             </button>
                         </div>
                     </form>

@@ -69,8 +69,15 @@ class AuthorController extends Controller
 
     public function update(Request $request, Author $author)
     {
+        // Handle modal submission with author_id parameter
+        if ($request->has('author_id') && $request->input('author_id') != $author->id) {
+            $author = Author::findOrFail($request->input('author_id'));
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:authors,name,' . $author->id,
+            'email' => 'nullable|email|max:255|unique:authors,email,' . $author->id,
+            'bio' => 'nullable|string|max:1000',
         ]);
 
         $author->update($validated);

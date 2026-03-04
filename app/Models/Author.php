@@ -8,6 +8,8 @@ class Author extends Model
 {
     protected $fillable = [
         'name',
+        'email',
+        'bio',
     ];
 
     public function books()
