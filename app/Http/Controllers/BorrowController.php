@@ -11,11 +11,31 @@ use Carbon\Carbon;
 
 class BorrowController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $borrows = Borrow::with(['student', 'borrowItems.book'])
-            ->latest()
-            ->paginate(10);
+        $query = Borrow::with(['student', 'borrowItems.book']);
+        
+        // Apply search filter
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->whereHas('student', function($studentQuery) use ($searchTerm) {
+                    $studentQuery->where('full_name', 'LIKE', '%' . $searchTerm . '%')
+                              ->orWhere('student_number', 'LIKE', '%' . $searchTerm . '%');
+                })
+                ->orWhereHas('borrowItems.book', function($bookQuery) use ($searchTerm) {
+                    $bookQuery->where('title', 'LIKE', '%' . $searchTerm . '%');
+                });
+            });
+        }
+        
+        // Apply status filter
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+        
+        $borrows = $query->latest()->paginate(10);
+        
         return view('borrows.index', compact('borrows'));
     }
 
