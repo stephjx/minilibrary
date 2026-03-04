@@ -42,7 +42,7 @@ class Borrow extends Model
             return 0;
         }
 
-        $overdueDays = $today->diffInDays($dueDate);
+        $overdueDays = floor($today->diffInDays($dueDate));
         $unreturnedBooks = 0;
         
         foreach ($this->borrowItems as $item) {

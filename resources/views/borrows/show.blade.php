@@ -153,7 +153,7 @@
                                 <p class="text-sm font-medium text-gray-900">Due Date</p>
                                 <p class="text-sm text-gray-500">{{ $borrow->due_date->format('F d, Y') }}</p>
                                 @if($borrow->isOverdue())
-                                    <p class="text-xs text-red-600 font-medium">Overdue by {{ $borrow->due_date->diffInDays(now()) }} days</p>
+                                    <p class="text-xs text-red-600 font-medium">Overdue by {{ floor($borrow->due_date->diffInDays(now())) }} days</p>
                                 @else
                                     <p class="text-xs text-gray-400">{{ $borrow->due_date->diffForHumans() }}</p>
                                 @endif
@@ -197,7 +197,7 @@
                                 </svg>
                                 <div>
                                     <p class="text-sm font-medium text-red-800">Overdue Notice</p>
-                                    <p class="text-sm text-red-600">This borrow is overdue by {{ $borrow->due_date->diffInDays(now()) }} days.</p>
+                                    <p class="text-sm text-red-600">This borrow is overdue by {{ floor($borrow->due_date->diffInDays(now())) }} days.</p>
                                 </div>
                             </div>
                         </div>
