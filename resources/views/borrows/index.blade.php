@@ -26,13 +26,8 @@
         </div>
     @endif
 
-<<<<<<< HEAD
     <!-- Add Borrow Modal -->
     <div x-data="{ showModal: false }" x-cloak class="relative">
-=======
-    <!-- Borrowing Records -->
-    <div class="relative">
->>>>>>> 5c84ab78300b3ee2548f70856342317f2a2f69d4
         <!-- Modal Button -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->
