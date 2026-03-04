@@ -3,8 +3,8 @@
         Students
     </x-slot>
 
-    <!-- Add Student Modal -->
-    <div x-data="{ showModal: false }" class="relative">
+    <!-- Student Modals -->
+    <div x-data="{ showModal: false, showEditModal: false, showDeleteModal: false, selectedStudent: null, studentToDelete: null }" class="relative">
         <!-- Modal Button -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->
@@ -150,20 +150,16 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                             </svg>
                                         </a>
-                                        <a href="{{ route('students.edit', $student) }}" class="p-2 bg-green-50 rounded-lg border border-green-200 text-green-600 hover:bg-green-100 transition-colors" title="Edit Student">
+                                        <button @click="selectedStudent = {{ $student->id }}; showEditModal = true" class="p-2 bg-green-50 rounded-lg border border-green-200 text-green-600 hover:bg-green-100 transition-colors" title="Edit Student">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                             </svg>
-                                        </a>
-                                        <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this student?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="p-2 bg-red-50 rounded-lg border border-red-200 text-red-600 hover:bg-red-100 transition-colors" title="Delete Student">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
-                                            </button>
-                                        </form>
+                                        </button>
+                                        <button @click="studentToDelete = {{ $student->id }}; showDeleteModal = true" class="p-2 bg-red-50 rounded-lg border border-red-200 text-red-600 hover:bg-red-100 transition-colors" title="Delete Student">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -307,5 +303,230 @@
                 </div>
             </div>
         </div>
+
+        <!-- Edit Student Modal -->
+        <!-- Modal Overlay -->
+        <div x-show="showEditModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
+             @click="showEditModal = false">
+        </div>
+
+        <!-- Modal Content -->
+        <div x-show="showEditModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95"
+             class="fixed inset-0 z-50 overflow-y-auto"
+             @click.self="showEditModal = false">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Edit Student</h3>
+                        <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <form action="#" method="POST" class="p-6">
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="student_id" x-model="selectedStudent">
+                        <input type="hidden" name="_method" value="PUT">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="edit_full_name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input 
+                                    type="text" 
+                                    id="edit_full_name"
+                                    name="full_name" 
+                                    required
+                                    x-init="$watch('selectedStudent', (value) => {
+                                        if (value) {
+                                            const student = {{ json_encode($students->keyBy('id')->toArray()) }};
+                                            $refs.edit_full_name.value = student[value]?.full_name || '';
+                                            $refs.edit_student_number.value = student[value]?.student_number || '';
+                                            $refs.edit_course.value = student[value]?.course || '';
+                                            $refs.edit_year_level.value = student[value]?.year_level || '';
+                                        }
+                                    })"
+                                    x-ref="edit_full_name"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter full name"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="edit_student_number" class="block text-sm font-medium text-gray-700 mb-1">Student Number</label>
+                                <input 
+                                    type="text" 
+                                    id="edit_student_number"
+                                    name="student_number" 
+                                    required
+                                    x-ref="edit_student_number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter student number"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="edit_course" class="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                                <input 
+                                    type="text" 
+                                    id="edit_course"
+                                    name="course" 
+                                    required
+                                    x-ref="edit_course"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter course"
+                                >
+                            </div>
+
+                            <div>
+                                <label for="edit_year_level" class="block text-sm font-medium text-gray-700 mb-1">Year Level</label>
+                                <select 
+                                    id="edit_year_level"
+                                    name="year_level" 
+                                    required
+                                    x-ref="edit_year_level"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                >
+                                    <option value="1st Year" {{ $student->year_level === '1st Year' ? 'selected' : '' }}>1st Year</option>
+                                    <option value="2nd Year" {{ $student->year_level === '2nd Year' ? 'selected' : '' }}>2nd Year</option>
+                                    <option value="3rd Year" {{ $student->year_level === '3rd Year' ? 'selected' : '' }}>3rd Year</option>
+                                    <option value="4th Year" {{ $student->year_level === '4th Year' ? 'selected' : '' }}>4th Year</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-gray-200">
+                            <button 
+                                type="button" 
+                                @click="showEditModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-[#0B3C5D] rounded-lg hover:bg-[#1a4d6e] transition-colors"
+                            >
+                                Update Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <!-- Modal Overlay -->
+        <div x-show="showDeleteModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
+             @click="showDeleteModal = false">
+        </div>
+
+        <!-- Modal Content -->
+        <div x-show="showDeleteModal" 
+             x-transition:enter="ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform scale-95"
+             x-transition:enter-end="opacity-100 transform scale-100"
+             x-transition:leave="ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95"
+             class="fixed inset-0 z-50 overflow-y-auto"
+             @click.self="showDeleteModal = false">
+            <div class="flex min-h-full items-center justify-center p-4">
+                <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Delete Student</h3>
+                        <button @click="showDeleteModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="p-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 2.502-3.118V6.618c0-1.451-1.062-3.118-2.502-3.118H4.144c-1.44 0-2.502 1.667-2.502 3.118v8.764c0 1.451 1.062 3.118 2.502 3.118z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Delete Student?</h4>
+                                <p class="text-gray-600 text-sm leading-relaxed">
+                                    Are you sure you want to delete <span class="font-semibold text-gray-900" x-text="studentToDelete ? ({{ json_encode($students->keyBy('id')->toArray()) }}[studentToDelete]?.full_name || 'this student') : 'this student'"></span>? This action cannot be undone and will permanently remove the student and all associated data.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="flex justify-end space-x-4 px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-xl">
+                        <button 
+                            type="button" 
+                            @click="showDeleteModal = false"
+                            class="px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500"
+                        >
+                            Cancel
+                        </button>
+                        <form action="{{ route('students.destroy', ':studentToDelete') }}" method="POST" x-init="$watch('studentToDelete', (value) => $el.action = $el.action.replace(':studentToDelete', value))">
+                            @csrf
+                            @method('DELETE')
+                            <button 
+                                type="submit"
+                                class="px-6 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                            >
+                                Delete Student
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('alpine:init', () => {
+                const form = document.querySelector('form[action="#"]');
+                if (form) {
+                    // Set initial form action
+                    const selectedStudent = Alpine.store('selectedStudent') || null;
+                    if (selectedStudent) {
+                        form.action = `/students/${selectedStudent}`;
+                    }
+                    
+                    // Watch for changes to selectedStudent
+                    Alpine.effect(() => {
+                        const newSelectedStudent = Alpine.store('selectedStudent') || null;
+                        if (newSelectedStudent && form) {
+                            form.action = `/students/${newSelectedStudent}`;
+                        }
+                    }, () => Alpine.store('selectedStudent'));
+                }
+            });
+        </script>
     </div>
 </x-library-layout>
