@@ -8,10 +8,26 @@ use App\Models\Author;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('authors')->paginate(10);
-        return view('books.index', compact('books'));
+        $query = Book::with('authors');
+        
+        // Apply search filter
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('title', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('isbn', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhereHas('authors', function($authorQuery) use ($searchTerm) {
+                      $authorQuery->where('name', 'LIKE', '%' . $searchTerm . '%');
+                  });
+            });
+        }
+        
+        $books = $query->paginate(10);
+        $authors = Author::all();
+        
+        return view('books.index', compact('books', 'authors'));
     }
 
     public function create()
@@ -46,7 +62,8 @@ class BookController extends Controller
     public function show(Book $book)
     {
         $book->load('authors', 'borrowItems.borrow.student');
-        return view('books.show', compact('book'));
+        $authors = Author::all();
+        return view('books.show', compact('book', 'authors'));
     }
 
     public function edit(Book $book)
@@ -69,7 +86,7 @@ class BookController extends Controller
         $borrowedQuantity = $book->total_quantity - $book->available_quantity;
         
         if ($validated['total_quantity'] < $borrowedQuantity) {
-            return redirect()->route('books.edit', $book)
+            return redirect()->route('books.show', $book)
                 ->with('error', 'Total quantity cannot be less than borrowed quantity.');
         }
 
@@ -82,7 +99,7 @@ class BookController extends Controller
 
         $book->authors()->sync($validated['authors']);
 
-        return redirect()->route('books.index')
+        return redirect()->route('books.show', $book)
             ->with('success', 'Book updated successfully.');
     }
 
