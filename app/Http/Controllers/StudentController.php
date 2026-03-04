@@ -20,11 +20,6 @@ class StudentController extends Controller
             });
         }
 
-        // Filter by course
-        if ($request->filled('course')) {
-            $query->where('course', $request->input('course'));
-        }
-
         // Filter by year level
         if ($request->filled('year_level')) {
             $query->where('year_level', $request->input('year_level'));

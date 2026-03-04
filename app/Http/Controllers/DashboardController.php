@@ -42,6 +42,9 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Chart data for library activity (last 6 months)
+        $chartData = $this->getChartData();
+
         return view('dashboard', compact(
             'totalStudents',
             'totalBooks',
@@ -51,7 +54,30 @@ class DashboardController extends Controller
             'overdueBorrows',
             'totalFines',
             'recentBorrows',
-            'popularBooks'
+            'popularBooks',
+            'chartData'
         ));
+    }
+
+    private function getChartData()
+    {
+        $monthlyData = [];
+        $currentDate = Carbon::now();
+        
+        // Get data for the last 6 months
+        for ($i = 5; $i >= 0; $i--) {
+            $month = $currentDate->copy()->subMonths($i);
+            $monthStart = $month->copy()->startOfMonth();
+            $monthEnd = $month->copy()->endOfMonth();
+            
+            $borrowCount = Borrow::whereBetween('borrow_date', [$monthStart, $monthEnd])->count();
+            
+            $monthlyData[] = [
+                'month' => $month->format('M Y'),
+                'count' => $borrowCount
+            ];
+        }
+        
+        return $monthlyData;
     }
 }

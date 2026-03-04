@@ -28,39 +28,12 @@
                                 >
                             </div>
                             <!-- Preserve filters when searching -->
-                            @if(request('course'))
-                                <input type="hidden" name="course" value="{{ request('course') }}">
-                            @endif
                             @if(request('year_level'))
                                 <input type="hidden" name="year_level" value="{{ request('year_level') }}">
                             @endif
                         </form>
                     </div>
                     
-                    <!-- Course Filter Dropdown -->
-                    <div>
-                        <form method="GET" action="{{ route('students.index') }}">
-                            <select 
-                                name="course" 
-                                class="px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm min-w-[140px]"
-                                onchange="this.form.submit()"
-                            >
-                                <option value="">All Courses</option>
-                                <option value="Computer Science" {{ request('course') == 'Computer Science' ? 'selected' : '' }}>Computer Science</option>
-                                <option value="Information Technology" {{ request('course') == 'Information Technology' ? 'selected' : '' }}>Information Technology</option>
-                                <option value="Computer Engineering" {{ request('course') == 'Computer Engineering' ? 'selected' : '' }}>Computer Engineering</option>
-                                <option value="Information Systems" {{ request('course') == 'Information Systems' ? 'selected' : '' }}>Information Systems</option>
-                            </select>
-                            <!-- Preserve other filters -->
-                            @if(request('search'))
-                                <input type="hidden" name="search" value="{{ request('search') }}">
-                            @endif
-                            @if(request('year_level'))
-                                <input type="hidden" name="year_level" value="{{ request('year_level') }}">
-                            @endif
-                        </form>
-                    </div>
-
                     <!-- Year Level Filter Dropdown -->
                     <div>
                         <form method="GET" action="{{ route('students.index') }}">
@@ -78,9 +51,6 @@
                             <!-- Preserve other filters -->
                             @if(request('search'))
                                 <input type="hidden" name="search" value="{{ request('search') }}">
-                            @endif
-                            @if(request('course'))
-                                <input type="hidden" name="course" value="{{ request('course') }}">
                             @endif
                         </form>
                     </div>
@@ -252,18 +222,14 @@
 
                             <div>
                                 <label for="course" class="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                                <select 
+                                <input 
+                                    type="text" 
                                     id="course"
                                     name="course" 
                                     required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0B3C5D] focus:border-[#0B3C5D] text-sm"
+                                    placeholder="Enter course"
                                 >
-                                    <option value="">Select a course</option>
-                                    <option value="Computer Science">Computer Science</option>
-                                    <option value="Information Technology">Information Technology</option>
-                                    <option value="Computer Engineering">Computer Engineering</option>
-                                    <option value="Information Systems">Information Systems</option>
-                                </select>
                             </div>
 
                             <div>

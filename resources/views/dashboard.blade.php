@@ -112,13 +112,8 @@
                     <h3 class="text-lg font-semibold text-gray-900">Library Activity</h3>
                     <span class="text-sm text-gray-500">Last 6 months</span>
                 </div>
-                <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                        <p class="text-gray-500">Activity chart coming soon</p>
-                    </div>
+                <div class="h-64">
+                    <canvas id="activityChart"></canvas>
                 </div>
             </div>
 
@@ -412,4 +407,86 @@
             </div>
         </div>
     </div>
+
+    <!-- Chart Initialization Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('activityChart');
+            if (ctx) {
+                const chartData = @json($chartData);
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.map(item => item.month),
+                        datasets: [{
+                            label: 'Borrow Transactions',
+                            data: chartData.map(item => item.count),
+                            borderColor: '#0B3C5D',
+                            backgroundColor: 'rgba(11, 60, 93, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#0B3C5D',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#ffffff',
+                                bodyColor: '#ffffff',
+                                padding: 12,
+                                displayColors: false,
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Borrows: ' + context.parsed.y;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6b7280',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    color: '#6b7280',
+                                    font: {
+                                        size: 11
+                                    },
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </x-library-layout>
