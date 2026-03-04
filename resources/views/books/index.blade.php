@@ -27,7 +27,7 @@
     @endif
 
     <!-- Add Book Modal -->
-    <div x-data="{ showModal: false }" class="relative">
+    <div x-data="{ showModal: false }" x-cloak class="relative">
         <!-- Modal Button -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->
@@ -170,6 +170,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
+             x-cloak
              @click="showModal = false">
         </div>
 
@@ -182,6 +183,7 @@
              x-transition:leave-start="opacity-100 transform scale-100"
              x-transition:leave-end="opacity-0 transform scale-95"
              class="fixed inset-0 z-50 overflow-y-auto"
+             x-cloak
              @click.self="showModal = false">
             <div class="flex min-h-full items-center justify-center p-4">
                 <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">

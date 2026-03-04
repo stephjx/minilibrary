@@ -4,7 +4,7 @@
     </x-slot>
 
     <!-- Student Modals -->
-    <div x-data="{ showModal: false, showEditModal: false, showDeleteModal: false, selectedStudent: null, studentToDelete: null }" class="relative">
+    <div x-data="{ showModal: false, showEditModal: false, showDeleteModal: false, selectedStudent: null, studentToDelete: null }" x-cloak class="relative">
         <!-- Modal Button -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->

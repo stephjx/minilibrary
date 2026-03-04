@@ -7,6 +7,25 @@
 
         <title>{{ config('app.name', 'Library Management System') }}</title>
 
+        <!-- Global CSS for x-cloak to prevent FOUC -->
+        <style>
+            [x-cloak] { 
+                display: none !important; 
+            }
+            
+            /* Prevent modal overlay flickering during initialization */
+            .fixed.inset-0.bg-gray-900 {
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            
+            .fixed.inset-0.bg-gray-900:not(.hidden) {
+                opacity: 1;
+                visibility: visible;
+            }
+        </style>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -15,7 +34,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased bg-gray-50">
-        <div class="min-h-screen flex">
+        <div class="min-h-screen flex" x-cloak>
             <!-- Sidebar -->
             <aside class="w-64 bg-[#0B3C5D] text-white">
                 <div class="p-6">
