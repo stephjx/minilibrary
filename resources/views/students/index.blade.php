@@ -187,7 +187,7 @@
             <!-- Pagination -->
             @if ($students->hasPages())
                 <div class="px-6 py-4 border-t border-gray-200">
-                    {{ $students->links() }}
+                    @include('pagination', ['paginator' => $students])
                 </div>
             @endif
         </div>

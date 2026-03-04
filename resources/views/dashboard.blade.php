@@ -134,7 +134,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                             </svg>
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 text-left">
                             <p class="font-medium text-blue-900">Add Student</p>
                             <p class="text-xs text-blue-600">Register new student</p>
                         </div>

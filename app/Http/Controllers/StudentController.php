@@ -30,7 +30,7 @@ class StudentController extends Controller
             $query->where('year_level', $request->input('year_level'));
         }
 
-        $students = $query->paginate(10);
+        $students = $query->paginate(5);
 
         return view('students.index', compact('students'));
     }
