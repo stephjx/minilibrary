@@ -32,6 +32,29 @@ class DashboardController extends Controller
             $totalFines += $borrow->calculateFine();
         }
 
+        // Calculate percentage changes
+        $lastMonth = Carbon::now()->subMonth();
+        $lastMonthStart = $lastMonth->copy()->startOfMonth();
+        $lastMonthEnd = $lastMonth->copy()->endOfMonth();
+        
+        // Students growth (last 30 days vs previous 30 days)
+        $studentsLast30Days = Student::where('created_at', '>=', Carbon::now()->subDays(30))->count();
+        $studentsPrevious30Days = Student::whereBetween('created_at', [Carbon::now()->subDays(60), Carbon::now()->subDays(30)])->count();
+        $studentsGrowth = $studentsPrevious30Days > 0 ? 
+            round((($studentsLast30Days - $studentsPrevious30Days) / $studentsPrevious30Days) * 100, 1) : 0;
+
+        // Books growth (last 30 days vs previous 30 days)
+        $booksLast30Days = Book::where('created_at', '>=', Carbon::now()->subDays(30))->count();
+        $booksPrevious30Days = Book::whereBetween('created_at', [Carbon::now()->subDays(60), Carbon::now()->subDays(30)])->count();
+        $booksGrowth = $booksPrevious30Days > 0 ? 
+            round((($booksLast30Days - $booksPrevious30Days) / $booksPrevious30Days) * 100, 1) : 0;
+
+        // Borrows growth (this week vs last week)
+        $borrowsThisWeek = Borrow::whereBetween('borrow_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $borrowsLastWeek = Borrow::whereBetween('borrow_date', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])->count();
+        $borrowsGrowth = $borrowsLastWeek > 0 ? 
+            round((($borrowsThisWeek - $borrowsLastWeek) / $borrowsLastWeek) * 100, 1) : 0;
+
         $recentBorrows = Borrow::with(['student'])
             ->latest()
             ->take(5)
@@ -53,6 +76,9 @@ class DashboardController extends Controller
             'activeBorrows',
             'overdueBorrows',
             'totalFines',
+            'studentsGrowth',
+            'booksGrowth',
+            'borrowsGrowth',
             'recentBorrows',
             'popularBooks',
             'chartData'

@@ -26,8 +26,13 @@
         </div>
     @endif
 
+<<<<<<< HEAD
     <!-- Add Borrow Modal -->
     <div x-data="{ showModal: false }" x-cloak class="relative">
+=======
+    <!-- Borrowing Records -->
+    <div class="relative">
+>>>>>>> 5c84ab78300b3ee2548f70856342317f2a2f69d4
         <!-- Modal Button -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
             <!-- Table Toolbar -->
@@ -73,12 +78,12 @@
                     
                     <!-- Add Borrow Button -->
                     <div class="ml-auto">
-                        <button @click="showModal = true" class="inline-flex items-center px-4 py-2.5 bg-[#0B3C5D] text-white rounded-lg hover:bg-[#1a4d6e] transition-colors text-sm font-medium whitespace-nowrap">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        <a href="{{ route('borrows.create') }}" class="inline-flex items-center px-4 py-2.5 bg-[#0B3C5D] text-white rounded-lg hover:bg-[#1a4d6e] transition-colors text-sm font-medium whitespace-nowrap">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                             </svg>
-                            + New Borrow
-                        </button>
+                            New Borrow
+                        </a>
                     </div>
                 </div>
             </div>
@@ -184,45 +189,47 @@
             @endif
         </div>
 
-        <!-- Add Borrow Modal (Placeholder) -->
-        <div x-show="showModal" 
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
-             x-cloak
-             @click="showModal = false">
-        </div>
+</div>
+    </div>
 
-        <div x-show="showModal" 
-             x-transition:enter="ease-out duration-300"
-             x-transition:enter-start="opacity-0 transform scale-95"
-             x-transition:enter-end="opacity-100 transform scale-100"
-             x-transition:leave="ease-in duration-200"
-             x-transition:leave-start="opacity-100 transform scale-100"
-             x-transition:leave-end="opacity-0 transform scale-95"
-             class="fixed inset-0 z-50 overflow-y-auto"
-             x-cloak
-             @click.self="showModal = false">
-            <div class="flex min-h-full items-center justify-center p-4">
-                <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">
-                    <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-900">Create New Borrow</h3>
-                        <button @click="showModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-6 text-center">
-                        <p class="text-gray-600">Borrow creation form will be implemented here.</p>
-                        <a href="{{ route('borrows.create') }}" class="inline-flex items-center px-4 py-2 bg-[#0B3C5D] text-white rounded-lg hover:bg-[#1a4d6e] transition-colors text-sm font-medium mt-4">
-                            Go to Borrow Form
-                        </a>
-                    </div>
+    <!-- Add Borrow Modal (Placeholder) -->
+    <div x-show="showModal" 
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50"
+         x-cloak
+         @click="showModal = false">
+    </div>
+
+    <div x-show="showModal" 
+         x-transition:enter="ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform scale-95"
+         x-transition:enter-end="opacity-100 transform scale-100"
+         x-transition:leave="ease-in duration-200"
+         x-transition:leave-start="opacity-100 transform scale-100"
+         x-transition:leave-end="opacity-0 transform scale-95"
+         class="fixed inset-0 z-50 overflow-y-auto"
+         x-cloak
+         @click.self="showModal = false">
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative bg-white rounded-xl shadow-xl max-w-md w-full">
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900">Create New Borrow</h3>
+                    <button @click="showModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6 text-center">
+                    <p class="text-gray-600">Borrow creation form will be implemented here.</p>
+                    <a href="{{ route('borrows.create') }}" class="inline-flex items-center px-4 py-2 bg-[#0B3C5D] text-white rounded-lg hover:bg-[#1a4d6e] transition-colors text-sm font-medium mt-4">
+                        Go to Borrow Form
+                    </a>
                 </div>
             </div>
         </div>
